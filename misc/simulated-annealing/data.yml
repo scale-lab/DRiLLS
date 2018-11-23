@@ -3,13 +3,12 @@
 # ============================================================================
 # Organization: SCALE Lab @ Brown University
 # Author: Abdelrahman Ibrahim <abdelrahman@brown.edu>
-# License: MIT
 # ===========================================================================
 
 # path of the design file in one of the accepted formats by ABC
 design_file: my-design.blif
-#
-# # the directory to hold the output of the iterations
+
+# the directory to hold the output of the iterations
 output_dir: result
 
 mapping:
