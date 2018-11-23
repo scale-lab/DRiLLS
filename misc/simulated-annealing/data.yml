@@ -1,0 +1,34 @@
+# This file holds parameters for running a greedy algorithm that optimizes
+#   a logic synthesis flow using ABC
+# ============================================================================
+# Organization: SCALE Lab @ Brown University
+# Author: Abdelrahman Ibrahim <abdelrahman@brown.edu>
+# License: MIT
+# ===========================================================================
+
+# path of the design file in one of the accepted formats by ABC
+design_file: my-design.blif
+#
+# # the directory to hold the output of the iterations
+output_dir: result
+
+mapping:
+  clock_period: 150   # in pico seconds
+  library_file: my-library.lib
+
+iterations: 100
+
+# add more optimization to the toolbox
+optimizations:
+  - rewrite
+  - rewrite -z
+  - refactor
+  - refactor -z
+  - resub
+  - resub -z
+  - balance
+
+# Parameters for the simulated annealing algorithm
+simulated_annealing:
+  initial_temp: 3
+  cooling_rate: 0.9
