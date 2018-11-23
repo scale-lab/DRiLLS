@@ -1,0 +1,35 @@
+# This file holds parameters for running a greedy algorithm that optimizes
+#   a logic synthesis flow using ABC
+# ============================================================================
+# Organization: SCALE Lab @ Brown University
+# Author: Abdelrahman Ibrahim <abdelrahman@brown.edu>
+# ===========================================================================
+
+# path of the design file in one of the accepted formats by ABC
+design_file: my-design.blif
+
+# the directory to hold the output of the iterations
+output_dir: result
+
+mapping:
+  clock_period: 150   # in pico seconds
+  library_file: my-library.lib
+
+# the number of iterations for the greedy optimization
+iterations: 100
+
+# add more optimization to the toolbox
+optimizations:
+  - rewrite
+  - rewrite -z
+  - refactor
+  - refactor -z
+  - resub
+  - resub -z
+  - balance
+
+# when the greedy algorithm get stuck, it applies one of the below post-mapping commands
+post_mapping_commands:
+- dnsize -D 150
+- upsize -D 150
+- buffer
