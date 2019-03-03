@@ -1,5 +1,5 @@
-# MaLLS
-ML-Guided Design Space Exploration for Logic Synthesis Optimization
+# DRiLLS
+Deep Reinforcement Learning for Logic Synthesis Optimization
 
 ## Method
 Write about the method here and hopefully refer to a link to the paper here
