@@ -12,15 +12,10 @@ abc_binary: abc
 # path of the design file in one of the accepted formats by ABC
 design_file: my-design.blif
 
-# the directory to hold the output of the iterations
-output_dir: result
-
+# library mapping
 mapping:
   clock_period: 150   # in pico seconds
   library_file: my-library.lib
-
-# the maximum number of iterations per episode
-iterations: 100
 
 # add more optimization to the toolbo
 optimizations:
@@ -31,10 +26,15 @@ optimizations:
   - resub
   - resub -z
   - balance
-  - dch -p
-  - ifraig
-  - dc2
-  - scorr
-  - dch -f
-  - resub -K 6
 
+# optimization objectives
+optimize_for: delay     # options: (delay, area)
+constraint_for: None    # options: (delay, area, None)
+constraint_value: 0.0   # value of max delay or max area
+
+# the directory to hold the playground the agent uses to practice
+playground_dir: playground
+
+# agent training parameters
+episodes: 1000
+iterations: 50
