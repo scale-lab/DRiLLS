@@ -16,7 +16,7 @@ class Session:
         self.iteration = 0
         self.episode = 0
         self.sequence = ['strash']
-        self.delay = float('inf')
+        self.delay, self.area = float('inf'), float('inf')
     
     def reset(self):
         """
@@ -24,7 +24,7 @@ class Session:
         """
         self.iteration = 0
         self.episode += 1
-        self.delay = float('inf')
+        self.delay, self.area = float('inf'), float('inf')
         self.sequence = ['strash']
         self.episode_dir = os.path.join(self.params['playground_dir'], str(self.episode))
         if not os.path.exists(self.episode_dir):
@@ -61,7 +61,7 @@ class Session:
             # get reward
             delay, area = self._get_metrics(proc)
             reward = self._get_reward(delay, area)
-            self.delay = delay
+            self.delay, self.area = delay, area
             # get new state of the circuit
             state = self._get_state(output_design_file)
             return state, reward
@@ -85,8 +85,52 @@ class Session:
         return delay, area
     
     def _get_reward(self, delay, area):
-        reward = None
-        return reward
+        constraint_met = True
+        optimization_improvement = 0    # (-1, 0, 1) <=> (worse, same, improvement)
+
+        # check optimizing parameter
+        if self.params['optimize_for'] == 'delay':
+            if delay < self.delay:
+                optimization_improvement = 1
+            elif delay == self.delay:
+                optimization_improvement = 0
+            else:
+                optimization_improvement = -1
+        elif self.params['optimize_for'] == 'area':
+            if area < self.area:
+                optimization_improvement = 1
+            elif delay == self.delay:
+                optimization_improvement = 0
+            else:
+                optimization_improvement = -1
+        else:
+            raise Exception('Optimizing parameter not set correctly!')
+        
+        # check constraint parameter
+        if self.params['constraint_for'] is not None:
+            if self.params['constraint_for'] == 'delay':
+                if delay > self.params['constraint_value']:
+                    constraint_met = False
+            elif self.params['constraint_for'] == 'area':
+                if area > self.params['constraint_value']:
+                    constraint_met = False
+
+        # now calculate the reward
+        return self._reward_table(constraint_met, optimization_improvement)
+    
+    def _reward_table(self, constraint_met, optimization_improvement):
+        return {
+            True: {
+                1: 2,
+                0: 0,
+                -1: -1
+            },
+            False: {
+                1: 1 if self.iteration < self.params['iterations'] / 2 else -1,
+                0: -1,
+                -1: -2
+            }
+        }[constraint_met][optimization_improvement]
     
     def _get_state(self, design_file):
         state = np.array([])
