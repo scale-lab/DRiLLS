@@ -7,7 +7,8 @@
 # ===========================================================================
 
 # change this to the abc binary path if the command is not recognized system-wide
-abc_binary: abc 
+abc_binary: abc
+yosys_binary: yosys
 
 # path of the design file in one of the accepted formats by ABC
 design_file: my-design.blif
