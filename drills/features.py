@@ -1,5 +1,5 @@
 import re
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 from subprocess import check_output
 from collections import defaultdict
 
@@ -56,7 +56,8 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     Returns features of a given circuit as a tuple.
     Features are listed below
     '''
-    features = defaultdict(0)
+    manager = Manager()
+    features = manager.dict()
     p1 = Process(target=yosys_stats, args=(design_file, yosys_binary, features))
     p2 = Process(target=abc_stats, args=(design_file, abc_binary, features))
     p1.start()
@@ -64,4 +65,4 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     p1.join()
     p2.join()
 
-    return features
+    return dict(features)
