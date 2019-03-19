@@ -47,17 +47,17 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
         lines = proc.decode("utf-8").split('\n')
         for line in lines:
             if 'i/o' in line:
-                ob = re.search(r'i/o *= *[1-9]+ */ *[1-9]+', line)
+                ob = re.search(r'i/o *= *[0-9]+ */ *[0-9]+', line)
                 input_pins = int(ob.group().split('=')[1].strip().split('/')[0].strip())
                 output_pins = int(ob.group().split('=')[1].strip().split('/')[1].strip())
         
-                ob = re.search(r'edge *= *[1-9]+', line)
+                ob = re.search(r'edge *= *[0-9]+', line)
                 edges = int(ob.group().split('=')[1].strip())
 
-                ob = re.search(r'lev *= *[1-9]+', line)
+                ob = re.search(r'lev *= *[0-9]+', line)
                 levels = int(ob.group().split('=')[1].strip())
 
-                ob = re.search(r'lat *= *[1-9]+', line)
+                ob = re.search(r'lat *= *[0-9]+', line)
                 latches = int(ob.group().split('=')[1].strip())
         abc_stats = (input_pins, output_pins, edges, levels, latches)
     except Exception as e:

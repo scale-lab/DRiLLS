@@ -76,10 +76,10 @@ class Session:
         """
         line = stats.decode("utf-8").split('\n')[-2].split(':')[-1].strip()
         
-        ob = re.search(r'delay *= *[1-9]+.?[0-9]+', line)
+        ob = re.search(r'delay *= *[0-9]+.?[0-9]+', line)
         delay = float(ob.group().split('=')[1].strip())
         
-        ob = re.search(r'area *= *[1-9]+.?[0-9]+', line)
+        ob = re.search(r'area *= *[0-9]+.?[0-9]+', line)
         area = float(ob.group().split('=')[1].strip())
 
         return delay, area
