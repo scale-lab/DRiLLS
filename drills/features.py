@@ -1,46 +1,32 @@
 import re
+from multiprocessing import Process
 from subprocess import check_output
+from collections import defaultdict
 
-def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
-    '''
-    Returns features of a given circuit as a tuple.
-    Features are listed below
-    '''
-    number_of_wires = 0
-    number_of_public_wires = 0
-    number_of_cells = 0
-    ands = 0
-    ors = 0
-    nots = 0
-
-    input_pins = 0
-    output_pins = 0
-    edges = 0
-    levels = 0
-    latches = 0
-
+def yosys_stats(design_file, yosys_binary, stats):
     yosys_command = "read_verilog " + design_file + "; stat"
     try:
         proc = check_output([yosys_binary, '-QT', '-p', yosys_command])
         lines = proc.decode("utf-8").split('\n')
         for line in lines:
             if 'Number of wires' in line:
-                number_of_wires = int(line.strip().split()[-1])
+                stats['number_of_wires'] = int(line.strip().split()[-1])
             if 'Number of public wires' in line:
-                number_of_public_wires = int(line.strip().split()[-1])
+                stats['number_of_public_wires'] = int(line.strip().split()[-1])
             if 'Number of cells' in line:
-                number_of_cells = int(line.strip().split()[-1])
+                stats['number_of_cells'] = int(line.strip().split()[-1])
             if '$and' in line:
-                ands = int(line.strip().split()[-1])
+                stats['ands'] = int(line.strip().split()[-1])
             if '$or' in line:
-                ors = int(line.strip().split()[-1])
+                stats['ors'] = int(line.strip().split()[-1])
             if '$not' in line:
-                nots = int(line.strip().split()[-1])
-        yosys_stats = (number_of_wires, number_of_public_wires, number_of_cells, ands, ors, nots)
+                stats['nots'] = int(line.strip().split()[-1])
     except Exception as e:
         print(e)
-        return None, None
-    
+        return None
+    return stats
+
+def abc_stats(design_file, abc_binary, stats):    
     abc_command = "read_verilog " + design_file + "; print_stats"
     try:
         proc = check_output([abc_binary, '-c', abc_command])
@@ -48,20 +34,34 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
         for line in lines:
             if 'i/o' in line:
                 ob = re.search(r'i/o *= *[0-9]+ */ *[0-9]+', line)
-                input_pins = int(ob.group().split('=')[1].strip().split('/')[0].strip())
-                output_pins = int(ob.group().split('=')[1].strip().split('/')[1].strip())
+                stats['input_pins'] = int(ob.group().split('=')[1].strip().split('/')[0].strip())
+                stats['output_pins'] = int(ob.group().split('=')[1].strip().split('/')[1].strip())
         
                 ob = re.search(r'edge *= *[0-9]+', line)
-                edges = int(ob.group().split('=')[1].strip())
+                stats['edges'] = int(ob.group().split('=')[1].strip())
 
                 ob = re.search(r'lev *= *[0-9]+', line)
-                levels = int(ob.group().split('=')[1].strip())
+                stats['levels'] = int(ob.group().split('=')[1].strip())
 
                 ob = re.search(r'lat *= *[0-9]+', line)
-                latches = int(ob.group().split('=')[1].strip())
-        abc_stats = (input_pins, output_pins, edges, levels, latches)
+                stats['latches'] = int(ob.group().split('=')[1].strip())
     except Exception as e:
         print(e)
-        return None, None
+        return None
     
-    return yosys_stats, abc_stats
+    return stats
+
+def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
+    '''
+    Returns features of a given circuit as a tuple.
+    Features are listed below
+    '''
+    features = defaultdict(0)
+    p1 = Process(target=yosys_stats, args=(design_file, yosys_binary, features))
+    p2 = Process(target=abc_stats, args=(design_file, abc_binary, features))
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
+
+    return features
