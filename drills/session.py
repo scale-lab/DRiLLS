@@ -2,6 +2,7 @@ import os
 import re
 import numpy as np
 from subprocess import check_output
+from .features import extract_features
 
 class Session:
     """
@@ -11,7 +12,7 @@ class Session:
         self.params = params
 
         self.action_space_length = len(self.params['optimizations'])
-        self.observation_space_size = 4     # the output of print_stats command
+        self.observation_space_size = 9     # number of features
 
         self.iteration = 0
         self.episode = 0
@@ -69,7 +70,6 @@ class Session:
             print(e)
             return None, None
         
-    
     def _get_metrics(self, stats):
         """
         parse delay and area from the stats command of ABC
@@ -133,6 +133,5 @@ class Session:
         }[constraint_met][optimization_improvement]
     
     def _get_state(self, design_file):
-        state = np.array([])
-        return state
+        return extract_features(design_file, self.params['yosys_binary'], self.params['abc_binary'])
     

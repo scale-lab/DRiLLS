@@ -1,4 +1,5 @@
 import re
+import numpy as np
 from multiprocessing import Process, Manager
 from subprocess import check_output
 from collections import defaultdict
@@ -57,12 +58,37 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     Features are listed below
     '''
     manager = Manager()
-    features = manager.dict()
-    p1 = Process(target=yosys_stats, args=(design_file, yosys_binary, features))
-    p2 = Process(target=abc_stats, args=(design_file, abc_binary, features))
+    stats = manager.dict()
+    p1 = Process(target=yosys_stats, args=(design_file, yosys_binary, stats))
+    p2 = Process(target=abc_stats, args=(design_file, abc_binary, stats))
     p1.start()
     p2.start()
     p1.join()
     p2.join()
 
-    return dict(features)
+    # normalized features
+    features = defaultdict(float)    
+    
+    # (1) - number of input/output pins
+    features['input_pins'] = int(stats['input_pins'])
+    features['output_pins'] = int(stats['output_pins'])
+    
+    # (2) - number of nodes and edges
+    features['number_of_nodes'] = int(stats['number_of_cells'])
+    features['number_of_edges'] = int(stats['edges'])
+
+    # (3) - number of levels
+    features['number_of_levels'] = int(stats['levels'])
+
+    # (4) - number of latches
+    features['number_of_latches'] = int(stats['latches'])
+
+    # (5) - gate types percentages
+    features['percentage_of_ands'] = float(stats['ands']) / float(stats['number_of_cells'])
+    features['percentage_of_ors'] = float(stats['ors']) / float(stats['number_of_cells'])
+    features['percentage_of_nots'] = float(stats['nots']) / float(stats['number_of_cells'])
+
+    return np.array([features['input_pins'], features['output_pins'], \
+        features['number_of_nodes'], features['number_of_edges'], \
+            features['number_of_levels'], features['number_of_latches'], \
+                features['percentage_of_ands'], features['percentage_of_ors'], features['percentage_of_nots']])

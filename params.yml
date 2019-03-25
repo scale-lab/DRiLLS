@@ -2,12 +2,11 @@
 #   a logic synthesis flow using ABC
 # ============================================================================
 # Organization: SCALE Lab @ Brown University
-# Author: Abdelrahman Ibrahim <abdelrahman@brown.edu>
-# License: MIT
+# Author: Abdelrahman Hosny <abdelrahman_hosny@brown.edu>
 # ===========================================================================
 
 # change this to the abc binary path if the command is not recognized system-wide
-abc_binary: abc
+abc_binary: yosys-abc
 yosys_binary: yosys
 
 # path of the design file in one of the accepted formats by ABC
@@ -27,11 +26,6 @@ optimizations:
   - resub
   - resub -z
   - balance
-
-# optimization objectives
-optimize_for: delay     # options: (delay, area)
-constraint_for: None    # options: (delay, area, None)
-constraint_value: 0.0   # value of max delay or max area
 
 # the directory to hold the playground the agent uses to practice
 playground_dir: playground

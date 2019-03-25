@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from .session import Session as Game
+from .log import log
 
 class A2C:
     def __init__(self, options):
@@ -107,11 +108,12 @@ class A2C:
         episode_rewards = []
         
         while not done:
-            action_probability_distribution = self.session.run(self.actor_probs,
-                                                               feed_dict={self.state_input: state.reshape([1, self.state_size])})
-            print(action_probability_distribution)
-            action = np.random.choice(range(action_probability_distribution.shape[1]), 
-                                      p=action_probability_distribution.ravel())
+            log('  iteration: ' + str(self.game.iteration))
+            action_probability_distribution = self.session.run(self.actor_probs, \
+                feed_dict={self.state_input: state.reshape([1, self.state_size])})
+            log(action_probability_distribution)
+            action = np.random.choice(range(action_probability_distribution.shape[1]), \
+                p=action_probability_distribution.ravel())
             new_state, reward, done, _ = self.game.step(action)
             
             # append this step
