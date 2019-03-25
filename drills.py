@@ -37,8 +37,8 @@ if __name__ == '__main__':
         all_rewards = []
         learner = A2C(options)
         for i in range(options['episodes']):
-            log('Episode: ' + str(i))
-            total_reward = learner.train_episode(i)
+            log('Episode: ' + str(i+1))
+            total_reward = learner.train_episode()
             all_rewards.append(total_reward)
             log('Episode: ' + str(i) + ' - done with total reward = ' + str(total_reward))
             print('')

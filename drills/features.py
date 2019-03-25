@@ -15,13 +15,13 @@ def yosys_stats(design_file, yosys_binary, stats):
             if 'Number of public wires' in line:
                 stats['number_of_public_wires'] = int(line.strip().split()[-1])
             if 'Number of cells' in line:
-                stats['number_of_cells'] = int(line.strip().split()[-1])
+                stats['number_of_cells'] = float(line.strip().split()[-1])
             if '$and' in line:
-                stats['ands'] = int(line.strip().split()[-1])
+                stats['ands'] = float(line.strip().split()[-1])
             if '$or' in line:
-                stats['ors'] = int(line.strip().split()[-1])
+                stats['ors'] = float(line.strip().split()[-1])
             if '$not' in line:
-                stats['nots'] = int(line.strip().split()[-1])
+                stats['nots'] = float(line.strip().split()[-1])
     except Exception as e:
         print(e)
         return None
@@ -70,23 +70,23 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     features = defaultdict(float)    
     
     # (1) - number of input/output pins
-    features['input_pins'] = int(stats['input_pins'])
-    features['output_pins'] = int(stats['output_pins'])
+    features['input_pins'] = stats['input_pins']
+    features['output_pins'] = stats['output_pins']
     
     # (2) - number of nodes and edges
-    features['number_of_nodes'] = int(stats['number_of_cells'])
-    features['number_of_edges'] = int(stats['edges'])
+    features['number_of_nodes'] = stats['number_of_cells']
+    features['number_of_edges'] = stats['edges']
 
     # (3) - number of levels
-    features['number_of_levels'] = int(stats['levels'])
+    features['number_of_levels'] = stats['levels']
 
     # (4) - number of latches
-    features['number_of_latches'] = int(stats['latches'])
+    features['number_of_latches'] = stats['latches']
 
     # (5) - gate types percentages
-    features['percentage_of_ands'] = float(stats['ands']) / float(stats['number_of_cells'])
-    features['percentage_of_ors'] = float(stats['ors']) / float(stats['number_of_cells'])
-    features['percentage_of_nots'] = float(stats['nots']) / float(stats['number_of_cells'])
+    features['percentage_of_ands'] = stats['ands'] / stats['number_of_cells']
+    features['percentage_of_ors'] = stats['ors'] / stats['number_of_cells']
+    features['percentage_of_nots'] = stats['nots'] / stats['number_of_cells']
 
     return np.array([features['input_pins'], features['output_pins'], \
         features['number_of_nodes'], features['number_of_edges'], \

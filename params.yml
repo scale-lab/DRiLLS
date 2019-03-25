@@ -10,12 +10,12 @@ abc_binary: yosys-abc
 yosys_binary: yosys
 
 # path of the design file in one of the accepted formats by ABC
-design_file: my-design.blif
+design_file: /Users/abdelrahman/Desktop/benchmarks/arithmetic/adder.v
 
 # library mapping
 mapping:
   clock_period: 150   # in pico seconds
-  library_file: my-library.lib
+  library_file: /Users/abdelrahman/Desktop/benchmarks/asap7.lib
 
 # add more optimization to the toolbo
 optimizations:
@@ -31,5 +31,5 @@ optimizations:
 playground_dir: playground
 
 # agent training parameters
-episodes: 1000
+episodes: 100
 iterations: 50

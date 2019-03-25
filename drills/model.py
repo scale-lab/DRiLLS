@@ -3,12 +3,37 @@ import numpy as np
 from .session import Session as Game
 from .log import log
 
+class Normalizer():
+    def __init__(self, num_inputs):
+        self.n = tf.zeros(num_inputs)
+        self.mean = tf.zeros(num_inputs)
+        self.mean_diff = tf.zeros(num_inputs)
+        self.var = tf.zeros(num_inputs)
+
+    def observe(self, x):
+        self.n += 1.
+        last_mean = tf.identity(self.mean)
+        self.mean += (x-self.mean)/self.n
+        self.mean_diff += (x-last_mean)*(x-self.mean)
+        self.var = tf.clip_by_value(self.mean_diff/self.n, clip_value_min=1e-2, clip_value_max=1000000000)
+
+    def normalize(self, inputs):
+        obs_std = tf.sqrt(self.var)
+        return (inputs - self.mean)/obs_std
+    
+    def reset(self):
+        self.n = tf.zeros(num_inputs)
+        self.mean = tf.zeros(num_inputs)
+        self.mean_diff = tf.zeros(num_inputs)
+        self.var = tf.zeros(num_inputs)
+
 class A2C:
     def __init__(self, options):
         self.game = Game(options)
 
         self.num_actions = self.game.action_space_length
         self.state_size = self.game.observation_space_size
+        self.normalizer = Normalizer(self.state_size)
 
         self.state_input = tf.placeholder(tf.float32, [None, self.state_size])
 
@@ -95,12 +120,15 @@ class A2C:
         
         return critic_loss + actor_loss
 
-    def train_episode(self, episode_number):
+    def train_episode(self):
         """
         train_episode will be called several times by the drills.py to train the agent. In this method,
         we run the agent for a single episode, then use that data to train the agent.
         """
         state = self.game.reset()
+        self.normalizer.reset()
+        self.normalizer.observe(state)
+        state = self.normalizer.normalize(state).eval(session=self.session)
         done = False
         
         episode_states = []
@@ -111,7 +139,7 @@ class A2C:
             log('  iteration: ' + str(self.game.iteration))
             action_probability_distribution = self.session.run(self.actor_probs, \
                 feed_dict={self.state_input: state.reshape([1, self.state_size])})
-            log(action_probability_distribution)
+            print(action_probability_distribution)
             action = np.random.choice(range(action_probability_distribution.shape[1]), \
                 p=action_probability_distribution.ravel())
             new_state, reward, done, _ = self.game.step(action)
@@ -124,6 +152,8 @@ class A2C:
             episode_rewards.append(reward)
             
             state = new_state
+            self.normalizer.observe(state)
+            state = self.normalizer.normalize(state).eval(session=self.session)
         
         # Now that we have run the episode, we use this data to train the agent
         discounted_episode_rewards = self.discount_and_normalize_rewards(episode_rewards)
