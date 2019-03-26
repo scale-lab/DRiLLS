@@ -32,7 +32,7 @@ class Normalizer():
         self.var = tf.zeros(self.num_inputs)
 
 class A2C:
-    def __init__(self, options):
+    def __init__(self, options, load_model=False):
         self.game = Game(options)
 
         self.num_actions = self.game.action_space_length
@@ -50,7 +50,16 @@ class A2C:
         self.loss_val = self.loss()
         self.train_op = self.optimizer()
         self.session = tf.Session()
-        self.session.run(tf.global_variables_initializer())
+        
+        # model saving/restoring
+        self.model_dir = options['model_dir']
+        self.saver = tf.train.Saver()
+
+        if load_model:
+            self.saver.restore(self.session, self.model_dir)
+            log("Model restored.")
+        else:
+            self.session.run(tf.global_variables_initializer())
         
         self.gamma = 0.99
         self.learning_rate = 0.01
@@ -124,6 +133,10 @@ class A2C:
         
         return critic_loss + actor_loss
 
+    def save_model(self):
+        save_path = self.saver.save(self.session, self.model_dir)
+        log("Model saved in path: %s" % str(save_path))
+
     def train_episode(self):
         """
         train_episode will be called several times by the drills.py to train the agent. In this method,
@@ -143,7 +156,7 @@ class A2C:
             log('  iteration: ' + str(self.game.iteration))
             action_probability_distribution = self.session.run(self.actor_probs, \
                 feed_dict={self.state_input: state.reshape([1, self.state_size])})
-            print(action_probability_distribution)
+            log(str(action_probability_distribution))
             action = np.random.choice(range(action_probability_distribution.shape[1]), \
                 p=action_probability_distribution.ravel())
             new_state, reward, done, _ = self.game.step(action)
@@ -162,9 +175,11 @@ class A2C:
         # Now that we have run the episode, we use this data to train the agent
         discounted_episode_rewards = self.discount_and_normalize_rewards(episode_rewards)
         
-        _ = self.session.run(self.train_op, feed_dict={self.state_input: np.array(episode_states),
-                                                        self.actions: np.array(episode_actions),
-                                                        self.discounted_episode_rewards_: discounted_episode_rewards})
+        _ = self.session.run(self.train_op, feed_dict={self.state_input: np.array(episode_states), \
+            self.actions: np.array(episode_actions), \
+                self.discounted_episode_rewards_: discounted_episode_rewards})
+        
+        self.save_model()
         
         return np.sum(episode_rewards)
     

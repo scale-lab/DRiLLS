@@ -21,7 +21,8 @@ if __name__ == '__main__':
         description='Performs logic synthesis optimization using RL')
     parser._positionals.title = 'Positional arguments'
     parser._optionals.title = 'Optional arguments'
-    parser.add_argument('-v', '--version', action='version', version = 'CNV-Sim v0.1', help = "Shows program's version number and exit")
+    parser.add_argument('-v', '--version', action='version', version = 'DRiLLS v0.1', help = "Shows program's version number and exit")
+    parser.add_argument("-l", "--load_model", type=bool, default=False, help="Loads a saved Tensorflow model")
     parser.add_argument("mode", type=str, choices=['train', 'optimize'], \
         help="Use the design to train the model or only optimize it")
     parser.add_argument("params", type=open, nargs='?', default='params.yml', \
@@ -46,3 +47,8 @@ if __name__ == '__main__':
             print('')
     
         mean_reward = np.mean(all_rewards[-100:])
+    elif args.mode == 'optimize':
+        log('Starting agent with a saved model')
+        learner = A2C(options, load_model=True)
+        for _ in range(options['iterations']):
+            pass
