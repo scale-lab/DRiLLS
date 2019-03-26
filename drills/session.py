@@ -49,6 +49,7 @@ class Session:
 
         # logging
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
+        self.log.flush()
 
         return state
     
@@ -61,6 +62,7 @@ class Session:
 
         # logging
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
+        self.log.flush()
 
         return new_state, reward, self.iteration == self.params['iterations'], None
 
