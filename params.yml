@@ -17,7 +17,7 @@ mapping:
   clock_period: 150   # in pico seconds
   library_file: /Users/abdelrahman/Desktop/benchmarks/asap7.lib
 
-# add more optimization to the toolbo
+# add more optimization to the toolbox
 optimizations:
   - rewrite
   - rewrite -z
@@ -33,4 +33,4 @@ playground_dir: playground
 # agent training parameters
 episodes: 100
 iterations: 50
-model_dir: /tmp/brain   # must be absolute path
+model_dir: /tmp/brain/model.ckpt   # must be absolute path
