@@ -18,6 +18,9 @@ class Session:
         self.episode = 0
         self.sequence = ['strash']
         self.delay, self.area = float('inf'), float('inf')
+
+        # logging
+        self.log = None
     
     def __del__(self):
         if self.log:
