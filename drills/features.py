@@ -22,16 +22,18 @@ def yosys_stats(design_file, yosys_binary, stats):
                 stats['number_of_cells'] = float(line.strip().split()[-1])
             if '$and' in line:
                 stats['ands'] = float(line.strip().split()[-1])
-            else:
-                stats['ands'] = 0.0
             if '$or' in line:
                 stats['ors'] = float(line.strip().split()[-1])
-            else:
-                stats['ors'] = 0.0
             if '$not' in line:
                 stats['nots'] = float(line.strip().split()[-1])
-            else:
-                stats['nots'] = 0.0
+        
+        # catch some design special cases
+        if 'ands' not in stats:
+            stats['ands'] = 0.0
+        if 'ors' not in stats:
+            stats['ors'] = 0.0
+        if 'nots' not in stats:
+            stats['nots'] = 0.0
     except Exception as e:
         print(e)
         return None
