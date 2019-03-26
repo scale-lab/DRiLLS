@@ -69,11 +69,11 @@ class Session:
 
         # logging
         if self.area < self.best_known_area[0]:
-            self.best_known_area = list(map(str, (self.area, self.delay, self.episode, self.iteration)))
+            self.best_known_area = (self.area, self.delay, self.episode, self.iteration)
         if self.delay < self.best_known_delay[1]:
-            self.best_known_delay = list(map(str, (self.area, self.delay, self.episode, self.iteration)))
+            self.best_known_delay = (self.area, self.delay, self.episode, self.iteration)
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', '
-            + '; '.join(self.best_known_area) + ', ' + '; '.join(self.best_known_delay) + '\n')
+            + '; '.join(list(map(str, self.best_known_area))) + ', ' + '; '.join(list(map(str, self.best_known_delay))) + '\n')
         self.log.flush()
 
         return new_state, reward, self.iteration == self.params['iterations'], None
