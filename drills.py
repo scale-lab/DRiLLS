@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser._positionals.title = 'Positional arguments'
     parser._optionals.title = 'Optional arguments'
     parser.add_argument('-v', '--version', action='version', version = 'DRiLLS v0.1', help = "Shows program's version number and exit")
-    parser.add_argument("-l", "--load_model", action='store_true', type=bool, default=False, help="Loads a saved Tensorflow model")
+    parser.add_argument("-l", "--load_model", action='store_true', help="Loads a saved Tensorflow model")
     parser.add_argument("mode", type=str, choices=['train', 'optimize'], \
         help="Use the design to train the model or only optimize it")
     parser.add_argument("params", type=open, nargs='?', default='params.yml', \
