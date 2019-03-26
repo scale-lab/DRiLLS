@@ -1,10 +1,14 @@
 import tensorflow as tf
 import numpy as np
+import datetime
 from .session import Session as Game
-from .log import log
+
+def log(message):
+        print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
 
 class Normalizer():
     def __init__(self, num_inputs):
+        self.num_inputs = num_inputs
         self.n = tf.zeros(num_inputs)
         self.mean = tf.zeros(num_inputs)
         self.mean_diff = tf.zeros(num_inputs)
@@ -22,10 +26,10 @@ class Normalizer():
         return (inputs - self.mean)/obs_std
     
     def reset(self):
-        self.n = tf.zeros(num_inputs)
-        self.mean = tf.zeros(num_inputs)
-        self.mean_diff = tf.zeros(num_inputs)
-        self.var = tf.zeros(num_inputs)
+        self.n = tf.zeros(self.num_inputs)
+        self.mean = tf.zeros(self.num_inputs)
+        self.mean_diff = tf.zeros(self.num_inputs)
+        self.var = tf.zeros(self.num_inputs)
 
 class A2C:
     def __init__(self, options):

@@ -3,6 +3,7 @@ import re
 import numpy as np
 from subprocess import check_output
 from .features import extract_features
+from .log import Log
 
 class Session:
     """
@@ -19,6 +20,10 @@ class Session:
         self.sequence = ['strash']
         self.delay, self.area = float('inf'), float('inf')
     
+    def __del__(self):
+        if self.log:
+            self.log.close()
+    
     def reset(self):
         """
         resets the environment and returns the state
@@ -30,8 +35,19 @@ class Session:
         self.episode_dir = os.path.join(self.params['playground_dir'], str(self.episode))
         if not os.path.exists(self.episode_dir):
             os.makedirs(self.episode_dir)
+        
+        # logging
+        log_file = os.path.join(self.episode_dir, 'log.csv')
+        if self.log:
+            self.log.close()
+        self.log = open(log_file)
+        self.log.write('iteration, optimization, area, delay\n')
 
         state, _ = self._run()
+
+        # logging
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
+            
         return state
     
     def step(self, optimization):
@@ -40,6 +56,9 @@ class Session:
         """
         self.sequence.append(self.params['optimizations'][optimization])
         new_state, reward = self._run()
+
+        # logging
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
 
         return new_state, reward, self.iteration == self.params['iterations'], None
 
