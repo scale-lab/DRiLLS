@@ -42,7 +42,7 @@ class Session:
         log_file = os.path.join(self.episode_dir, 'log.csv')
         if self.log:
             self.log.close()
-        self.log = open(log_file, 'w', buffering=0)
+        self.log = open(log_file, 'w')
         self.log.write('iteration, optimization, area, delay\n')
 
         state, _ = self._run()
