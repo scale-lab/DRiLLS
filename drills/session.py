@@ -1,8 +1,12 @@
 import os
 import re
+import datetime
 import numpy as np
 from subprocess import check_output
 from .features import extract_features
+
+def log(message):
+    print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
 
 class Session:
     """

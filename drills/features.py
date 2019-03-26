@@ -4,6 +4,9 @@ from multiprocessing import Process, Manager
 from subprocess import check_output
 from collections import defaultdict
 
+def log(message):
+    print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
+
 def yosys_stats(design_file, yosys_binary, stats):
     yosys_command = "read_verilog " + design_file + "; stat"
     try:
@@ -88,6 +91,7 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     features['percentage_of_ors'] = stats['ors'] / stats['number_of_cells']
     features['percentage_of_nots'] = stats['nots'] / stats['number_of_cells']
 
+    log(str(features))
     return np.array([features['input_pins'], features['output_pins'], \
         features['number_of_nodes'], features['number_of_edges'], \
             features['number_of_levels'], features['number_of_latches'], \

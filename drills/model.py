@@ -4,7 +4,7 @@ import datetime
 from .session import Session as Game
 
 def log(message):
-        print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
+    print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
 
 class Normalizer():
     def __init__(self, num_inputs):

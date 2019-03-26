@@ -8,7 +8,7 @@ from drills.model import A2C
 from pyfiglet import Figlet
 
 def log(message):
-        print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
+    print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
 
 class CapitalisedHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
     def add_usage(self, usage, actions, groups, prefix=None):
