@@ -3,7 +3,6 @@ import re
 import numpy as np
 from subprocess import check_output
 from .features import extract_features
-from .log import Log
 
 class Session:
     """
@@ -47,7 +46,7 @@ class Session:
 
         # logging
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
-            
+
         return state
     
     def step(self, optimization):
