@@ -4,6 +4,7 @@ import os
 import argparse
 import datetime
 import numpy as np
+import time
 from drills.model import A2C
 from pyfiglet import Figlet
 
@@ -39,12 +40,18 @@ if __name__ == '__main__':
         
         all_rewards = []
         learner = A2C(options, load_model=args.load_model)
+        training_start_time = time.time()
         for i in range(options['episodes']):
             log('Episode: ' + str(i+1))
+            start = time.time()
             total_reward = learner.train_episode()
+            end = time.time()
             all_rewards.append(total_reward)
             log('Episode: ' + str(i) + ' - done with total reward = ' + str(total_reward))
+            log('Episode ' + str(i) + ' Run Time ~ ' + str((start - end) / 60) + ' minutes.')
             print('')
+        training_end_time = time.time()
+        log('Total Training Run Time ~ ' + str((training_start_time - training_end_time) / 60) + ' minutes.')
     
         mean_reward = np.mean(all_rewards[-100:])
     elif args.mode == 'optimize':

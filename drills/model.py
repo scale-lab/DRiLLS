@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import datetime
+import time
 from .session import Session as Game
 
 def log(message):
@@ -173,11 +174,14 @@ class A2C:
             state = self.normalizer.normalize(state).eval(session=self.session)
         
         # Now that we have run the episode, we use this data to train the agent
+        start = time.time()
         discounted_episode_rewards = self.discount_and_normalize_rewards(episode_rewards)
         
         _ = self.session.run(self.train_op, feed_dict={self.state_input: np.array(episode_states), \
             self.actions: np.array(episode_actions), \
                 self.discounted_episode_rewards_: discounted_episode_rewards})
+        end = time.time()
+        log('Episode Agent Training Time ~ ' + str((start - end) / 60) + ' minutes.')
         
         self.save_model()
         

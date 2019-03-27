@@ -25,6 +25,7 @@ class Session:
 
         self.best_known_area = (float('inf'), float('inf'), -1, -1)
         self.best_known_delay = (float('inf'), float('inf'), -1, -1)
+        self.best_known_area_meets_constraint = (float('inf'), float('inf'), -1, -1)
 
         # logging
         self.log = None
@@ -50,7 +51,7 @@ class Session:
         if self.log:
             self.log.close()
         self.log = open(log_file, 'w')
-        self.log.write('iteration, optimization, area, delay, best_area, best_delay\n')
+        self.log.write('iteration, optimization, area, delay, best_area_meets_constraint, best_area, best_delay\n')
 
         state, _ = self._run()
 
@@ -70,10 +71,14 @@ class Session:
         # logging
         if self.area < self.best_known_area[0]:
             self.best_known_area = (self.area, self.delay, self.episode, self.iteration)
+            if self.delay <= self.params['mapping']['clock_period']:
+                self.best_known_area_meets_constraint = (self.area, self.delay, self.episode, self.iteration)
         if self.delay < self.best_known_delay[1]:
             self.best_known_delay = (self.area, self.delay, self.episode, self.iteration)
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', '
-            + '; '.join(list(map(str, self.best_known_area))) + ', ' + '; '.join(list(map(str, self.best_known_delay))) + '\n')
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', ' +
+            '; '.join(list(map(str, self.best_known_area_meets_constraint))) + ', ' + 
+            '; '.join(list(map(str, self.best_known_area))) + ', ' + 
+            '; '.join(list(map(str, self.best_known_delay))) + '\n')
         self.log.flush()
 
         return new_state, reward, self.iteration == self.params['iterations'], None
