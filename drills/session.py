@@ -88,13 +88,15 @@ class Session:
         run ABC on the given design file with the sequence of commands
         """
         self.iteration += 1
-        output_design_file = os.path.join(self.episode_dir, str(self.iteration) + '-mapped.v')
+        output_design_file = os.path.join(self.episode_dir, str(self.iteration) + '.v')
+        output_design_file_mapped = os.path.join(self.episode_dir, str(self.iteration) + '-mapped.v')
     
         abc_command = 'read ' + self.params['mapping']['library_file'] + '; '
         abc_command += 'read ' + self.params['design_file'] + '; '
         abc_command += ';'.join(self.sequence) + '; '
-        abc_command += 'map -D ' + str(self.params['mapping']['clock_period']) + '; '
         abc_command += 'write ' + output_design_file + '; '
+        abc_command += 'map -D ' + str(self.params['mapping']['clock_period']) + '; '
+        abc_command += 'write ' + output_design_file_mapped + '; '
         abc_command += 'topo; stime;'
     
         try:
