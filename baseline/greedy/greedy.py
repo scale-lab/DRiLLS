@@ -30,9 +30,10 @@ def extract_results(stats):
     extracts area and delay from the printed stats on stdout
     """
     line = stats.decode("utf-8").split('\n')[-2].split(':')[-1].strip()
-    ob = re.search(r'delay *= *[1-9]+.?[0-9]+', line)
+    
+    ob = re.search(r'Delay *= *[1-9]+.?[0-9]*', line)
     delay = float(ob.group().split('=')[1].strip())
-    ob = re.search(r'area *= *[1-9]+.?[0-9]+', line)
+    ob = re.search(r'Area *= *[1-9]+.?[0-9]*', line)
     area = float(ob.group().split('=')[1].strip())
     return delay, area
 
@@ -51,9 +52,9 @@ def run_optimization(output_dir, optimization, design_file, library):
     abc_command += optimization + '; '
     abc_command += 'write ' + output_design_file + '; '
     abc_command += 'map -D ' + str(clock_period) + '; '
-    abc_command += 'print_stats; '
+    abc_command += 'topo; stime; '
     
-    proc = subprocess.check_output(['abc','-c', abc_command])
+    proc = subprocess.check_output(['yosys-abc','-c', abc_command])
     d, a = extract_results(proc)
     return output_design_file, d, a
 
@@ -87,7 +88,7 @@ def run_post_mapping(output_dir, optimization, design_file, library):
     abc_command += optimization + ';'
     abc_command += 'write ' + output_design_file + '; '
     abc_command += 'print_stats; '
-    proc = subprocess.check_output(['abc','-c', abc_command])
+    proc = subprocess.check_output(['yosys-abc','-c', abc_command])
     d, a = extract_results(proc)
     return output_design_file, d, a
 
@@ -108,7 +109,7 @@ def run_thread_post_mapping(iteration_dir, design_file, opt):
     return (opt, opt_file, delay, area)
 
 # main optimizing iteration
-previous_delay = None
+previous_area = None
 for i in range(iterations):
     # log
     log('Iteration: ' + str(i+1))
@@ -123,7 +124,7 @@ for i in range(iterations):
     results = Parallel(n_jobs=len(optimizations))(delayed(run_thread)(iteration_dir, current_design_file, opt) for opt in optimizations)
     
     # get the minimum result of all threads
-    best_thread = min(results, key = lambda t: t[2])  # getting minimum for delay (index=2) or area (index=3)
+    best_thread = min(results, key = lambda t: t[3])  # getting minimum for delay (index=2) or area (index=3)
     
     # hold the best result in variables
     best_optimization = best_thread[0]
@@ -132,27 +133,29 @@ for i in range(iterations):
     best_area = best_thread[3]
     
     
-    if best_delay == previous_delay:
+    if best_area == previous_area:
+        # break for now
+        log('Looks like the best area is exactly the same as last iteration!')
+        log('Nothing more to do ..')
+        break
+        
         log()
-        log('Looks like the best delay is exactly the same as last iteration!')
+        log('Looks like the best area is exactly the same as last iteration!')
         log('Performing post mapping optimizations ..')
         # run post mapping optimization
         results = Parallel(n_jobs=len(post_mapping_optimizations))(delayed(run_thread_post_mapping)(iteration_dir, current_design_file, opt) for opt in post_mapping_optimizations)
-        # results = []
-        #for i in range(len(post_mapping_optimizations)):
-        #    results.append(run_thread_post_mapping(iteration_dir, current_design_file, post_mapping_optimizations[i]))
 
         # get the minimum result of all threads
-        best_thread = min(results, key = lambda t: t[2])  # getting minimum for delay (index=2) or area (index=3)
+        best_thread = min(results, key = lambda t: t[3])  # getting minimum for delay (index=2) or area (index=3)
 
         # hold the best result in variables
         best_optimization = best_thread[0]
         best_optimization_file = best_thread[1]
         best_delay = best_thread[2]
         best_area = best_thread[3]
-        previous_delay = None
+        previous_area = None
     else:
-        previous_delay = best_delay
+        previous_area = best_area
     
     # save results
     log()
