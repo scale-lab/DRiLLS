@@ -136,8 +136,17 @@ for i in range(iterations):
     if best_area == previous_area:
         # break for now
         log('Looks like the best area is exactly the same as last iteration!')
-        log('Nothing more to do ..')
-        break
+        log('Continue anyway ..')
+        log('Choosing Optimization: ' + best_optimization + ' -> delay: ' + str(best_delay) + ', area: ' + str(best_area))
+        save_optimization_step(i, best_optimization, best_delay, best_area)
+
+        log()
+    
+        # update design file for the next iteration
+        current_design_file = best_optimization_file
+        log('================')
+        log()
+        continue
         
         log()
         log('Looks like the best area is exactly the same as last iteration!')
