@@ -95,7 +95,7 @@ class Session:
         abc_command += ';'.join(self.sequence) + '; '
         abc_command += 'map -D ' + str(self.params['mapping']['clock_period']) + '; '
         abc_command += 'write ' + output_design_file + '; '
-        abc_command += 'print_stats; '
+        abc_command += 'topo; stime;'
     
         try:
             proc = check_output([self.params['abc_binary'], '-c', abc_command])
@@ -116,10 +116,10 @@ class Session:
         """
         line = stats.decode("utf-8").split('\n')[-2].split(':')[-1].strip()
         
-        ob = re.search(r'delay *= *[0-9]+.?[0-9]+', line)
+        ob = re.search(r'Delay *= *[0-9]+.?[0-9]*', line)
         delay = float(ob.group().split('=')[1].strip())
         
-        ob = re.search(r'area *= *[0-9]+.?[0-9]+', line)
+        ob = re.search(r'Area *= *[0-9]+.?[0-9]*', line)
         area = float(ob.group().split('=')[1].strip())
 
         return delay, area
