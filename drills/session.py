@@ -138,7 +138,7 @@ class Session:
             optimization_improvement = -1
         
         # check constraint parameter
-        if delay > self.area:
+        if delay > self.params["mapping"]["clock_period"]:
             constraint_met = False
             if delay < self.delay:
                 constraint_improvement = 1
