@@ -71,10 +71,10 @@ class Session:
         # logging
         if self.area < self.best_known_area[0]:
             self.best_known_area = (self.area, self.delay, self.episode, self.iteration)
-            if self.delay <= self.params['mapping']['clock_period']:
-                self.best_known_area_meets_constraint = (self.area, self.delay, self.episode, self.iteration)
         if self.delay < self.best_known_delay[1]:
             self.best_known_delay = (self.area, self.delay, self.episode, self.iteration)
+        if self.delay <= self.params['mapping']['clock_period'] and self.area < self.best_known_area_meets_constraint[0]:
+            self.best_known_area_meets_constraint = (self.area, self.delay, self.episode, self.iteration)
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', ' +
             '; '.join(list(map(str, self.best_known_area_meets_constraint))) + ', ' + 
             '; '.join(list(map(str, self.best_known_area))) + ', ' + 
