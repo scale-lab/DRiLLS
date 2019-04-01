@@ -21,11 +21,11 @@ class FPGASession:
         self.iteration = 0
         self.episode = 0
         self.sequence = ['strash']
-        self.lut_6, self.levels = int('inf'), int('inf')
+        self.lut_6, self.levels = float('inf'), float('inf')
 
-        self.best_known_lut_6 = (int('inf'), int('inf'), -1, -1)
-        self.best_known_levels = (int('inf'), int('inf'), -1, -1)
-        self.best_known_lut_6_meets_constraint = (int('inf'), int('inf'), -1, -1)
+        self.best_known_lut_6 = (float('inf'), float('inf'), -1, -1)
+        self.best_known_levels = (float('inf'), float('inf'), -1, -1)
+        self.best_known_lut_6_meets_constraint = (float('inf'), float('inf'), -1, -1)
 
         # logging
         self.log = None
@@ -40,7 +40,7 @@ class FPGASession:
         """
         self.iteration = 0
         self.episode += 1
-        self.lut_6, self.levels = int('inf'), int('inf')
+        self.lut_6, self.levels = float('inf'), float('inf')
         self.sequence = ['strash']
         self.episode_dir = os.path.join(self.params['playground_dir'], str(self.episode))
         if not os.path.exists(self.episode_dir):
@@ -56,7 +56,7 @@ class FPGASession:
         state, _ = self._run()
 
         # logging
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.lut_6), str(self.levels)]) + '\n')
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(int(self.lut_6), str(int(self.levels)]) + '\n')
         self.log.flush()
 
         return state
@@ -70,12 +70,12 @@ class FPGASession:
 
         # logging
         if self.lut_6 < self.best_known_lut_6[0]:
-            self.best_known_lut_6 = (self.lut_6, self.levels, self.episode, self.iteration)
+            self.best_known_lut_6 = (int(self.lut_6), int(self.levels), self.episode, self.iteration)
         if self.levels < self.best_known_levels[1]:
-            self.best_known_levels = (self.lut_6, self.levels, self.episode, self.iteration)
+            self.best_known_levels = (int(self.lut_6), int(self.levels), self.episode, self.iteration)
         if self.levels <= self.params['fpga_mapping']['levels'] and self.lut_6 < self.best_known_lut_6_meets_constraint[0]:
-            self.best_known_lut_6_meets_constraint = (self.lut_6, self.levels, self.episode, self.iteration)
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', ' +
+            self.best_known_lut_6_meets_constraint = (int(self.lut_6), int(self.levels), self.episode, self.iteration)
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.lut_6), str(self.levels)]) + ', ' +
             '; '.join(list(map(str, self.best_known_lut_6_meets_constraint))) + ', ' + 
             '; '.join(list(map(str, self.best_known_lut_6))) + ', ' + 
             '; '.join(list(map(str, self.best_known_levels))) + '\n')
