@@ -56,7 +56,7 @@ class FPGASession:
         state, _ = self._run()
 
         # logging
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(int(self.lut_6), str(int(self.levels)]) + '\n')
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(int(self.lut_6)), str(int(self.levels))]) + '\n')
         self.log.flush()
 
         return state
@@ -75,7 +75,7 @@ class FPGASession:
             self.best_known_levels = (int(self.lut_6), int(self.levels), self.episode, self.iteration)
         if self.levels <= self.params['fpga_mapping']['levels'] and self.lut_6 < self.best_known_lut_6_meets_constraint[0]:
             self.best_known_lut_6_meets_constraint = (int(self.lut_6), int(self.levels), self.episode, self.iteration)
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.lut_6), str(self.levels)]) + ', ' +
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(int(self.lut_6)), str(int(self.levels))]) + ', ' +
             '; '.join(list(map(str, self.best_known_lut_6_meets_constraint))) + ', ' + 
             '; '.join(list(map(str, self.best_known_lut_6))) + ', ' + 
             '; '.join(list(map(str, self.best_known_levels))) + '\n')
