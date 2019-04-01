@@ -8,7 +8,7 @@ from .features import extract_features
 def log(message):
     print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
 
-class Session:
+class FPGASession:
     """
     A class to represent a logic synthesis optimization session using ABC
     """
@@ -21,11 +21,11 @@ class Session:
         self.iteration = 0
         self.episode = 0
         self.sequence = ['strash']
-        self.delay, self.area = float('inf'), float('inf')
+        self.lut_6, self.levels = int('inf'), int('inf')
 
-        self.best_known_area = (float('inf'), float('inf'), -1, -1)
-        self.best_known_delay = (float('inf'), float('inf'), -1, -1)
-        self.best_known_area_meets_constraint = (float('inf'), float('inf'), -1, -1)
+        self.best_known_lut_6 = (int('inf'), int('inf'), -1, -1)
+        self.best_known_levels = (int('inf'), int('inf'), -1, -1)
+        self.best_known_lut_6_meets_constraint = (int('inf'), int('inf'), -1, -1)
 
         # logging
         self.log = None
@@ -40,7 +40,7 @@ class Session:
         """
         self.iteration = 0
         self.episode += 1
-        self.delay, self.area = float('inf'), float('inf')
+        self.lut_6, self.levels = int('inf'), int('inf')
         self.sequence = ['strash']
         self.episode_dir = os.path.join(self.params['playground_dir'], str(self.episode))
         if not os.path.exists(self.episode_dir):
@@ -51,12 +51,12 @@ class Session:
         if self.log:
             self.log.close()
         self.log = open(log_file, 'w')
-        self.log.write('iteration, optimization, area, delay, best_area_meets_constraint, best_area, best_delay\n')
+        self.log.write('iteration, optimization, LUT-6, Levels, best LUT-6 meets constraint, best LUT-6, best levels\n')
 
         state, _ = self._run()
 
         # logging
-        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + '\n')
+        self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.lut_6), str(self.levels)]) + '\n')
         self.log.flush()
 
         return state
@@ -69,16 +69,16 @@ class Session:
         new_state, reward = self._run()
 
         # logging
-        if self.area < self.best_known_area[0]:
-            self.best_known_area = (self.area, self.delay, self.episode, self.iteration)
-        if self.delay < self.best_known_delay[1]:
-            self.best_known_delay = (self.area, self.delay, self.episode, self.iteration)
-        if self.delay <= self.params['mapping']['clock_period'] and self.area < self.best_known_area_meets_constraint[0]:
-            self.best_known_area_meets_constraint = (self.area, self.delay, self.episode, self.iteration)
+        if self.lut_6 < self.best_known_lut_6[0]:
+            self.best_known_lut_6 = (self.lut_6, self.levels, self.episode, self.iteration)
+        if self.levels < self.best_known_levels[1]:
+            self.best_known_levels = (self.lut_6, self.levels, self.episode, self.iteration)
+        if self.levels <= self.params['fpga_mapping']['levels'] and self.lut_6 < self.best_known_lut_6_meets_constraint[0]:
+            self.best_known_lut_6_meets_constraint = (self.lut_6, self.levels, self.episode, self.iteration)
         self.log.write(', '.join([str(self.iteration), self.sequence[-1], str(self.area), str(self.delay)]) + ', ' +
-            '; '.join(list(map(str, self.best_known_area_meets_constraint))) + ', ' + 
-            '; '.join(list(map(str, self.best_known_area))) + ', ' + 
-            '; '.join(list(map(str, self.best_known_delay))) + '\n')
+            '; '.join(list(map(str, self.best_known_lut_6_meets_constraint))) + ', ' + 
+            '; '.join(list(map(str, self.best_known_lut_6))) + ', ' + 
+            '; '.join(list(map(str, self.best_known_levels))) + '\n')
         self.log.flush()
 
         return new_state, reward, self.iteration == self.params['iterations'], None
@@ -91,20 +91,19 @@ class Session:
         output_design_file = os.path.join(self.episode_dir, str(self.iteration) + '.v')
         output_design_file_mapped = os.path.join(self.episode_dir, str(self.iteration) + '-mapped.v')
     
-        abc_command = 'read ' + self.params['mapping']['library_file'] + '; '
-        abc_command += 'read ' + self.params['design_file'] + '; '
+        abc_command = 'read ' + self.params['design_file'] + '; '
         abc_command += ';'.join(self.sequence) + '; '
         abc_command += 'write ' + output_design_file + '; '
-        abc_command += 'map -D ' + str(self.params['mapping']['clock_period']) + '; '
+        abc_command += 'if -K ' + str(self.params['fpga_mapping']['lut_inputs']) + '; '
         abc_command += 'write ' + output_design_file_mapped + '; '
-        abc_command += 'topo; stime;'
+        abc_command += 'print_stats;'
     
         try:
             proc = check_output([self.params['abc_binary'], '-c', abc_command])
             # get reward
-            delay, area = self._get_metrics(proc)
-            reward = self._get_reward(delay, area)
-            self.delay, self.area = delay, area
+            lut_6, levels = self._get_metrics(proc)
+            reward = self._get_reward(lut_6, levels)
+            self.lut_6, self.levels = lut_6, levels
             # get new state of the circuit
             state = self._get_state(output_design_file)
             return state, reward
@@ -114,37 +113,37 @@ class Session:
         
     def _get_metrics(self, stats):
         """
-        parse delay and area from the stats command of ABC
+        parse LUT count and levels from the stats command of ABC
         """
         line = stats.decode("utf-8").split('\n')[-2].split(':')[-1].strip()
         
-        ob = re.search(r'Delay *= *[0-9]+.?[0-9]*', line)
-        delay = float(ob.group().split('=')[1].strip())
+        ob = re.search(r'lev *= *[0-9]+', line)
+        levels = int(ob.group().split('=')[1].strip())
         
-        ob = re.search(r'Area *= *[0-9]+.?[0-9]*', line)
-        area = float(ob.group().split('=')[1].strip())
+        ob = re.search(r'nd *= *[0-9]+', line)
+        lut_6 = int(ob.group().split('=')[1].strip())
 
-        return delay, area
+        return lut_6, levels
     
-    def _get_reward(self, delay, area):
+    def _get_reward(self, lut_6, levels):
         constraint_met = True
         optimization_improvement = 0    # (-1, 0, 1) <=> (worse, same, improvement)
         constraint_improvement = 0      # (-1, 0, 1) <=> (worse, same, improvement)
 
         # check optimizing parameter
-        if area < self.area:
+        if lut_6 < self.lut_6:
             optimization_improvement = 1
-        elif area == self.area:
+        elif lut_6 == self.lut_6:
             optimization_improvement = 0
         else:
             optimization_improvement = -1
         
         # check constraint parameter
-        if delay > self.params["mapping"]["clock_period"]:
+        if levels > self.params["fpga_mapping"]["levels"]:
             constraint_met = False
-            if delay < self.delay:
+            if levels < self.levels:
                 constraint_improvement = 1
-            elif delay == self.delay:
+            elif levels == self.levels:
                 constraint_improvement = 0
             else:
                 constraint_improvement = -1

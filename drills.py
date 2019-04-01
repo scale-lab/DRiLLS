@@ -26,6 +26,8 @@ if __name__ == '__main__':
     parser.add_argument("-l", "--load_model", action='store_true', help="Loads a saved Tensorflow model")
     parser.add_argument("mode", type=str, choices=['train', 'optimize'], \
         help="Use the design to train the model or only optimize it")
+    parser.add_argument("mapping", type=str, choices=['scl', 'fpga'], \
+        help="Map to standard cell library or FPGA")
     parser.add_argument("params", type=open, nargs='?', default='params.yml', \
         help="Path to the params.yml file")
     args = parser.parse_args()
@@ -34,12 +36,17 @@ if __name__ == '__main__':
 
     f = Figlet(font='slant')
     print(f.renderText('DRiLLS'))
+
+    if args.mapping == 'scl':
+        fpga_mapping = False
+    else:
+        fpga_mapping = True
     
     if args.mode == 'train':
         log('Starting to train the agent ..')
         
         all_rewards = []
-        learner = A2C(options, load_model=args.load_model)
+        learner = A2C(options, load_model=args.load_model, fpga_mapping=fpga_mapping)
         training_start_time = time.time()
         for i in range(options['episodes']):
             log('Episode: ' + str(i+1))
@@ -58,4 +65,5 @@ if __name__ == '__main__':
         log('Starting agent to optimize')
         learner = A2C(options, load_model=True)
         for _ in range(options['iterations']):
+            # to be completed
             pass

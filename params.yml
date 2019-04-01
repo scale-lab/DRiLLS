@@ -17,6 +17,11 @@ mapping:
   clock_period: 150   # in pico seconds
   library_file: /Users/abdelrahman/Desktop/benchmarks/asap7.lib
 
+# FPGA mapping - exlusive with the above
+fpga_mapping:
+  levels: 100
+  lut_inputs: 6
+
 # add more optimization to the toolbox
 optimizations:
   - rewrite

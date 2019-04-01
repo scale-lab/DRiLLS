@@ -2,7 +2,8 @@ import tensorflow as tf
 import numpy as np
 import datetime
 import time
-from .session import Session as Game
+from .scl_session import SCLSession as SCLGame
+from .fpga_session import FPGASession as FPGAGame
 
 def log(message):
     print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
@@ -33,8 +34,11 @@ class Normalizer():
         self.var = tf.zeros(self.num_inputs)
 
 class A2C:
-    def __init__(self, options, load_model=False):
-        self.game = Game(options)
+    def __init__(self, options, load_model=False, fpga_mapping=False):
+        if fpga_mapping:
+            self.game = FPGAGame(options)
+        else:
+            self.game = SCLGame(options)
 
         self.num_actions = self.game.action_space_length
         self.state_size = self.game.observation_space_size
