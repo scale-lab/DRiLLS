@@ -1,4 +1,11 @@
 #!/usr/bin/python3
+
+# Copyright (c) 2019, SCALE Lab, Brown University
+# All rights reserved.
+
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. 
+
 import yaml
 import os
 import subprocess
@@ -58,7 +65,7 @@ def run_optimization(output_dir, optimization, design_file, library):
     abc_command += 'map -D ' + str(clock_period) + '; '
     abc_command += 'print_stats; '
     
-    proc = subprocess.check_output(['/home/abdelrahman/yosys/yosys-abc','-c', abc_command])
+    proc = subprocess.check_output(['yosys-abc','-c', abc_command])
     d, a = extract_results(proc)
     return output_design_file, d, a
 
@@ -92,7 +99,7 @@ def run_post_mapping(output_dir, optimization, design_file, library):
     abc_command += optimization + ';'
     abc_command += 'write ' + output_design_file + '; '
     abc_command += 'print_stats; '
-    proc = subprocess.check_output(['/home/abdelrahman/yosys/yosys-abc','-c', abc_command])
+    proc = subprocess.check_output(['yosys-abc','-c', abc_command])
     d, a = extract_results(proc)
     return output_design_file, d, a
 

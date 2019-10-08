@@ -1,21 +1,25 @@
-# This file holds parameters for running a greedy algorithm that optimizes
-#   a logic synthesis flow using ABC
-# ============================================================================
-# Organization: SCALE Lab @ Brown University
-# Author: Abdelrahman Hosny <abdelrahman_hosny@brown.edu>
-# ===========================================================================
+# Copyright (c) 2019, SCALE Lab, Brown University
+# All rights reserved.
+
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. 
+
+# ======================================================================
+# This file holds parameters for running a DRiLLS agent for training and
+# inference. It sets up the RL environment along with the logic synthesis
+# environment to train the RL agent. 
 
 # change this to the abc binary path if the command is not recognized system-wide
 abc_binary: yosys-abc
 yosys_binary: yosys
 
 # path of the design file in one of the accepted formats by ABC
-design_file: /Users/abdelrahman/Desktop/benchmarks/arithmetic/adder.v
+design_file: design.v
 
-# library mapping
+# standard cell library mapping
 mapping:
   clock_period: 150   # in pico seconds
-  library_file: /Users/abdelrahman/Desktop/benchmarks/asap7.lib
+  library_file: tech.lib
 
 # FPGA mapping - exlusive with the above
 fpga_mapping:
@@ -32,7 +36,7 @@ optimizations:
   - resub -z
   - balance
 
-# the directory to hold the playground the agent uses to practice
+# the directory to hold the playground an agent uses to practice
 playground_dir: playground
 
 # agent training parameters

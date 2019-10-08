@@ -1,3 +1,11 @@
+#!/usr/bin/python3
+
+# Copyright (c) 2019, SCALE Lab, Brown University
+# All rights reserved.
+
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. 
+
 import tensorflow as tf
 import numpy as np
 import datetime
@@ -190,7 +198,6 @@ class A2C:
         self.save_model()
         
         return np.sum(episode_rewards)
-    
     
     def discount_and_normalize_rewards(self, episode_rewards):
         """
