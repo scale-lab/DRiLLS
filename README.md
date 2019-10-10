@@ -1,4 +1,4 @@
-# DRiLLS <img align="right" width="20%" src="doc/img/drills-logo.png">
+# DRiLLS <img align="right" width="10%" src="doc/img/drills-logo.png">
 Deep Reinforcement Learning for Logic Synthesis Optimization
 
 ## Abstract
@@ -15,10 +15,14 @@ DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
 3. `pip install -r requirements.txt`
 
 ## How It Works
-TBC
+![](doc/img/drills-architecture.png)
 
-## Design Space Exploration
-TBC
+There are two major components in DRiLLS framework: 
+
+* **Logic Synthesis** environment: a setup of the design space exploration problem as a reinforcement learning task. The logic synthesis environment is implemented as a session in [drills/scl_session.py](drills/scl_session.py) and [drills/fpga_session.py](drills/fpga_session.py).
+* **Reinforcement Learning** environment: it employs an *Advantage Actor Critic agent (A2C)* to navigate the environment searching for the best optimization at a given state. It is implemented in [drills/model.py](drills/model.py) and uses [drills/features.py](drills/features.py) to extract AIG features.
+
+For more details on the inner-workings of the framework, see Section 4 in the paper.
 
 ## Reporting Bugs
 Please, use [ISSUE_TEMPLATE/bug_report.md](.github/ISSUE_TEMPLATE/bug_report.md) to create an issue and describe your bug.
