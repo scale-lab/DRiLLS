@@ -15,7 +15,7 @@ DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
 3. `pip install -r requirements.txt`
 
 ## How It Works
-<img src="doc/img/drills-architecture.png" width="70%">
+<img src="doc/img/drills-architecture.png" style="display: block; margin-left: auto; margin-right: auto; width: 70%;">
 
 There are two major components in DRiLLS framework: 
 
