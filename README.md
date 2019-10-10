@@ -5,7 +5,7 @@ Deep Reinforcement Learning for Logic Synthesis Optimization
 Logic synthesis requires extensive tuning of the synthesis optimization flow where the quality of results (QoR) depends on the sequence of opti-mizations used.  Efficient design space exploration ischallenging due to the exponential number of possible optimization  permutations. Therefore,  automating the optimization process is necessary. In this work, we propose a novel reinforcement learning-based methodology  that  navigates  the  optimization  space  without human intervention.  We demonstrate the training of an Advantage Actor Critic (A2C) agent that seeks to minimize area subject to a timing constraint.  Using the proposed framework, designs can be optimized autonomously with no-humans in-loop.
 
 ## Citation
-TBC
+Preprint will be available soon!
 
 ## Setup
 DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
@@ -15,7 +15,7 @@ DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
 3. `pip install -r requirements.txt`
 
 ## How It Works
-![](doc/img/drills-architecture.png)
+![](doc/img/drills-architecture.png | width=70)
 
 There are two major components in DRiLLS framework: 
 
