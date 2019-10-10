@@ -1,4 +1,4 @@
-# DRiLLS
+# DRiLLS <img align="right" width="20%" src="doc/img/drills-logo.png">
 Deep Reinforcement Learning for Logic Synthesis Optimization
 
 ## Abstract
