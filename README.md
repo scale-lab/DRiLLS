@@ -22,7 +22,11 @@ There are two major components in DRiLLS framework:
 * **Logic Synthesis** environment: a setup of the design space exploration problem as a reinforcement learning task. The logic synthesis environment is implemented as a session in [drills/scl_session.py](drills/scl_session.py) and [drills/fpga_session.py](drills/fpga_session.py).
 * **Reinforcement Learning** environment: it employs an *Advantage Actor Critic agent (A2C)* to navigate the environment searching for the best optimization at a given state. It is implemented in [drills/model.py](drills/model.py) and uses [drills/features.py](drills/features.py) to extract AIG features.
 
-For more details on the inner-workings of the framework, see Section 4 in the paper.
+DRiLLS agent exploring the design space of [Max](https://github.com/lsils/benchmarks/blob/master/arithmetic/max.v) design.
+
+![](https://media.giphy.com/media/XbbW4WjeLuqneVbGEU/giphy.gif)
+
+For more details on the inner-workings of the framework, see Section 4 in [the paper](https://github.com/scale-lab/DRiLLS/blob/drills-preprint/doc/preprint/DRiLLS_preprint_AH.pdf).
 
 ## Reporting Bugs
 Please, use [ISSUE_TEMPLATE/bug_report.md](.github/ISSUE_TEMPLATE/bug_report.md) to create an issue and describe your bug.
