@@ -108,7 +108,6 @@ def extract_features(design_file, yosys_binary='yosys', abc_binary='abc'):
     features['percentage_of_ors'] = stats['ors'] / stats['number_of_cells']
     features['percentage_of_nots'] = stats['nots'] / stats['number_of_cells']
 
-    log(str(features))
     return np.array([features['input_pins'], features['output_pins'], \
         features['number_of_nodes'], features['number_of_edges'], \
             features['number_of_levels'], features['number_of_latches'], \
