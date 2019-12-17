@@ -169,7 +169,6 @@ class A2C:
             log('  iteration: ' + str(self.game.iteration))
             action_probability_distribution = self.session.run(self.actor_probs, \
                 feed_dict={self.state_input: state.reshape([1, self.state_size])})
-            log(str(action_probability_distribution))
             action = np.random.choice(range(action_probability_distribution.shape[1]), \
                 p=action_probability_distribution.ravel())
             new_state, reward, done, _ = self.game.step(action)
