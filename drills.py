@@ -65,7 +65,7 @@ if __name__ == '__main__':
             log('Episode ' + str(i) + ' Run Time ~ ' + str((start - end) / 60) + ' minutes.')
             print('')
         training_end_time = time.time()
-        log('Total Training Run Time ~ ' + str((training_start_time - training_end_time) / 60) + ' minutes.')
+        log('Total Training Run Time ~ ' + str((training_end_time - training_start_time) / 60) + ' minutes.')
     
         mean_reward = np.mean(all_rewards[-100:])
     elif args.mode == 'optimize':
