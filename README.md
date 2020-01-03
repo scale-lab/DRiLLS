@@ -10,9 +10,16 @@ Access DRiLLS manuscript on [arXiv](https://arxiv.org/abs/1911.04021). The final
 ## Setup
 DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
 
-1. `virtualenv .venv`
+1. `virtualenv .venv --python=python3`
 2. `source .venv/bin/activate`
 3. `pip install -r requirements.txt`
+
+## Run the agent
+
+1. Edit `params.yml` file. Comments in the file illustrate the individual fields.
+2. Run `python drills.py train scl`
+
+For help, `python drills.py -help`
 
 ## How It Works
 <img src="doc/img/drills-architecture.png" width="70%" style="display: block;  margin: 0 auto;">
