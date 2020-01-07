@@ -10,9 +10,16 @@ Access DRiLLS manuscript on [arXiv](https://arxiv.org/abs/1911.04021). The final
 ## Setup
 DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
 
-1. `virtualenv .venv`
+1. `virtualenv .venv --python=python3`
 2. `source .venv/bin/activate`
 3. `pip install -r requirements.txt`
+
+## Run the agent
+
+1. Edit `params.yml` file. Comments in the file illustrate the individual fields.
+2. Run `python drills.py train scl`
+
+For help, `python drills.py -help`
 
 ## How It Works
 <img src="doc/img/drills-architecture.png" width="70%" style="display: block;  margin: 0 auto;">
@@ -35,6 +42,9 @@ Please, use [ISSUE_TEMPLATE/bug_report.md](.github/ISSUE_TEMPLATE/bug_report.md)
 Below is a list of suggested contributions you can make. Before you work on any, it is advised that you create an issue using the [ISSUE_TEMPLATE/contribution.md](.github/ISSUE_TEMPLATE/contribution.md) to tell us what you plan to work on. This ensures that your work can be merged to the `master` branch in a timely manner.
 
 ### Modernize Tensorflow Implementation
+
+:hourglass_flowing_sand: WIP by [@born-2learn](https://github.com/born-2learn)
+
 Google has recently released [Dopamine](https://github.com/google/dopamine) which sets up a framework for researching reinforcement learning algorithms. A new version of DRiLLS would adopt Dopamine to make it easier to implement the model and session classes. If you are new to Dopamine and want to try it on a real use case, it would be a great fit for DRiLLS and will add a great value to our repository.
 
 ### Better Integration
