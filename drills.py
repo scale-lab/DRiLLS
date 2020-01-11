@@ -13,6 +13,7 @@ import datetime
 import numpy as np
 import time
 from drills.model import A2C
+from drills.fixed_optimization import optimize_with_fixed_script
 from pyfiglet import Figlet
 
 def log(message):
@@ -29,8 +30,12 @@ if __name__ == '__main__':
         description='Performs logic synthesis optimization using RL')
     parser._positionals.title = 'Positional arguments'
     parser._optionals.title = 'Optional arguments'
-    parser.add_argument('-v', '--version', action='version', version = 'DRiLLS v0.1', help = "Shows program's version number and exit")
-    parser.add_argument("-l", "--load_model", action='store_true', help="Loads a saved Tensorflow model")
+    parser.add_argument('-v', '--version', action='version', \
+        version = 'DRiLLS v0.1', help="Shows program's version number and exit")
+    parser.add_argument("-l", "--load_model", action='store_true', \
+        help="Loads a saved Tensorflow model")
+    parser.add_argument("-s", "--fixed_script", type=open, \
+        help="Executes a fixed optimization script before DRiLLS")
     parser.add_argument("mode", type=str, choices=['train', 'optimize'], \
         help="Use the design to train the model or only optimize it")
     parser.add_argument("mapping", type=str, choices=['scl', 'fpga'], \
@@ -43,6 +48,9 @@ if __name__ == '__main__':
 
     f = Figlet(font='slant')
     print(f.renderText('DRiLLS'))
+
+    if args.fixed_script:
+        params = optimize_with_fixed_script(params, args.fixed_script)
 
     if args.mapping == 'scl':
         fpga_mapping = False
@@ -72,5 +80,5 @@ if __name__ == '__main__':
         log('Starting agent to optimize')
         learner = A2C(options, load_model=True)
         for _ in range(options['iterations']):
-            # to be completed
+            # TODO: iteratively run the optimizer
             pass
