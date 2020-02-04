@@ -6,7 +6,7 @@
 # This source code is licensed under the BSD-style license found in the
 # LICENSE file in the root directory of this source tree. 
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 import datetime
 import time
