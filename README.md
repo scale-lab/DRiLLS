@@ -5,7 +5,7 @@ Deep Reinforcement Learning for Logic Synthesis Optimization
 Logic synthesis requires extensive tuning of the synthesis optimization flow where the quality of results (QoR) depends on the sequence of opti-mizations used.  Efficient design space exploration ischallenging due to the exponential number of possible optimization  permutations. Therefore,  automating the optimization process is necessary. In this work, we propose a novel reinforcement learning-based methodology  that  navigates  the  optimization  space  without human intervention.  We demonstrate the training of an Advantage Actor Critic (A2C) agent that seeks to minimize area subject to a timing constraint.  Using the proposed framework, designs can be optimized autonomously with no-humans in-loop.
 
 ## Paper
-Access DRiLLS manuscript on [arXiv](https://arxiv.org/abs/1911.04021). The final version will be available in the proceedings of [ASP-DAC 2020](https://aspdac2020.github.io/aspdac20/).
+DRiLLS has been presented at ASP-DAC 2020 and the manuscript is available on [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/9045559). A pre-print version is available on [arXiv](https://arxiv.org/abs/1911.04021).
 
 ## Setup
 DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
@@ -54,6 +54,18 @@ The goal is to enhance the model architecture used in [drills/model.py]. An enha
 * Changing gamma rate.
 * Changing learning rate.
 * Improve normalization.
+
+## Citation
+```
+@INPROCEEDINGS{9045559,
+    author={A. {Hosny} and S. {Hashemi} and M. {Shalan} and S. {Reda}},
+     booktitle={2020 25th Asia and South Pacific Design Automation Conference (ASP-DAC)},
+     title={DRiLLS: Deep Reinforcement Learning for Logic Synthesis},
+     year={2020},
+     volume={},
+     number={},
+     pages={581-586},}
+```
 
 ## License
 BSD 3-Clause License. See [LICENSE](LICENSE) file
