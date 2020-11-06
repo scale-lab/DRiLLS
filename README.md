@@ -8,11 +8,17 @@ Logic synthesis requires extensive tuning of the synthesis optimization flow whe
 DRiLLS has been presented at ASP-DAC 2020 and the manuscript is available on [IEEE Xplore](https://ieeexplore.ieee.org/abstract/document/9045559). A pre-print version is available on [arXiv](https://arxiv.org/abs/1911.04021).
 
 ## Setup
-DRiLLS requires `Python 3.6+`, `pip3` and `virtualenv` installed on the system.
+DRiLLS requires `Python 3.6`, `pip3` and `virtualenv` installed on the system.
 
 1. `virtualenv .venv --python=python3`
 2. `source .venv/bin/activate`
 3. `pip install -r requirements.txt`
+
+:warning: WARNING :warning:
+
+Since TensorFlow 2.x is not compatible with TensorFlow 1.x, this implementation is tested only on Python 3.6.
+If you have a newer version of Python, `pip` won't be able to find `tensorflow==1.x`. 
+
 
 ## Run the agent
 
