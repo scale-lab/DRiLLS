@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If this code helped your research, please cite it as below."
+authors:
+- family-names: "Hosny"
+  given-names: "Abdelrahman"
+  orcid: "https://orcid.org/0000-0003-4020-7973"
+- family-names: "Hashemi"
+  given-names: "Soheil"
+- family-names: "Shalan"
+  given-names: "Mohamed"
+- family-names: "Reda"
+  given-names: "Sherief"  
+title: "DRiLLS: Deep Reinforcement Learning for Logic Synthesis"
+version: 1.0.0
+doi: 10.1109/ASP-DAC47756.2020.9045559
+date-released: 2019-11-11
+url: "https://github.com/scale-lab/DRiLLS"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Hosny"
+    given-names: "Abdelrahman"
+    orcid: "https://orcid.org/0000-0003-4020-7973"
+  - family-names: "Hashemi"
+    given-names: "Soheil"
+  - family-names: "Shalan"
+    given-names: "Mohamed"
+  - family-names: "Reda"
+    given-names: "Sherief" 
+  doi: "10.1109/ASP-DAC47756.2020.9045559"
+  journal: "2020 25th Asia and South Pacific Design Automation Conference (ASP-DAC)"
+  month: 9
+  start: 581 # First page number
+  end: 586 # Last page number
+  title: "DRiLLS: Deep Reinforcement Learning for Logic Synthesis"
+  year: 2020
