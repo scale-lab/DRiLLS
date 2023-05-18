@@ -12,6 +12,7 @@ import datetime
 import time
 from .scl_session import SCLSession as SCLGame
 from .fpga_session import FPGASession as FPGAGame
+from .aig_session import AIGSession as AIGGame
 
 def log(message):
     print('[DRiLLS {:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now()) + "] " + message)
@@ -42,11 +43,13 @@ class Normalizer():
         self.var = tf.zeros(self.num_inputs)
 
 class A2C:
-    def __init__(self, options, load_model=False, fpga_mapping=False):
-        if fpga_mapping:
+    def __init__(self, options, load_model=False, mapping=''):
+        if mapping == 'fpga':
             self.game = FPGAGame(options)
-        else:
+        elif mapping == 'scl':
             self.game = SCLGame(options)
+        else:
+            self.game = AIGGame(options)
 
         self.num_actions = self.game.action_space_length
         self.state_size = self.game.observation_space_size

@@ -38,8 +38,8 @@ if __name__ == '__main__':
         help="Executes a fixed optimization script before DRiLLS")
     parser.add_argument("mode", type=str, choices=['train', 'optimize'], \
         help="Use the design to train the model or only optimize it")
-    parser.add_argument("mapping", type=str, choices=['scl', 'fpga'], \
-        help="Map to standard cell library or FPGA")
+    parser.add_argument("mapping", type=str, choices=['scl', 'fpga', 'aig'], \
+        help="Map to standard cell library, FPGA or just optimize aig.")
     parser.add_argument("params", type=open, nargs='?', default='params.yml', \
         help="Path to the params.yml file")
     args = parser.parse_args()
@@ -52,16 +52,16 @@ if __name__ == '__main__':
     if args.fixed_script:
         params = optimize_with_fixed_script(params, args.fixed_script)
 
-    if args.mapping == 'scl':
-        fpga_mapping = False
-    else:
-        fpga_mapping = True
+    # if args.mapping == 'scl':
+    #     fpga_mapping = False
+    # else:
+    #     fpga_mapping = True
     
     if args.mode == 'train':
         log('Starting to train the agent ..')
         
         all_rewards = []
-        learner = A2C(options, load_model=args.load_model, fpga_mapping=fpga_mapping)
+        learner = A2C(options, load_model=args.load_model, mapping=args.mapping)
         training_start_time = time.time()
         for i in range(options['episodes']):
             log('Episode: ' + str(i+1))
